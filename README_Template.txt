@@ -16,9 +16,9 @@ https://github.com/TODO
 
 #Make it your own!
 This project is licensed under the MIT open source license (see LICENSE.txt).
-The MIT license allows you to take this project and make a spectrometer or other
-awesome projects! MIT is a very permissive license, but for the sake of giving 
-credit it does require you to include the license and copyright from LICENSE.txt 
-in any derivative work.
+The MIT license allows you to make this project your own by modifying it or using
+it as a starting point for other awesome projects! MIT is a very permissive license, 
+but for the sake of giving credit it does require you to include the license and 
+copyright from LICENSE.txt in any derivative work.
 
 Fork away! Let us know what you build!
