@@ -22,65 +22,54 @@
 
 from microbit import *
 
-# Setup & Config
-display.off()  # Turns off LEDs to free up additional input pins
-uart.init(baudrate=9600)  # Sets serial baud rate
-DATA_RATE = 10 # Frequency of code looping
-EOL = '\n' # End of Line Character
-chan = 0 # Defualt channel number for radio
+# Frequency of main loop executing, in milliseconds
+EXECUTION_INTERVAL = 10 
 
-# These constants are the pins used on the micro:bit for the sensors
-SENSOR_ONE = pin0
-SENSOR_TWO = pin1
+# Array to hold the serial data
+last_parsed_data = None
 
+# time main loop was last executed
+last_executed = 0
 
-def process_sensors():
-    # TO DO: Describe what this function does 
-    global sensor_one_reading, sensor_two_reading
-    sensor_one_reading = SENSOR_ONE.read_analog()
-    sensor_two_reading = SENSOR_TWO.read_analog()
-   
+# Initializes serial to 9600 baud rate
+uart.init(baudrate=9600)  
+
 
 #=============================================================================#
 #---------------The Code Below Here is for Excel Communication----------------#
 #=============================================================================#
 
-# Array to hold the serial data
-parsedData = [0] * 5
 
-def getData():
-    #   This function gets data from serial and builds it into a string
-    global parsedData, builtString
-    builtString = ""
-    while uart.any() is True:
-        byteIn = uart.read(1)
-        if byteIn == b'\n':
-            continue
-        byteIn = str(byteIn)
-        splitByte = byteIn.split("'")
-        builtString += splitByte[1]
-    parseData(builtString)
-    return (parsedData)
+def retrieve_columns_from_uart():
+    ''' returns array of columns from serial
+        or None if nothing available
+    '''
+    if uart.any():
+        bytesIn = uart.readline() 
+        stringIn = str(bytesIn, "utf-8")
+        return stringIn.split(',\n')
+    return None       
 
 
-def parseData(s):
-    #   This function seperates the string into an array
-    global parsedData
-    if s != "":
-        parsedData = s.split(",")
 
-#=============================================================================#
-#------------------------------Main Program Loop------------------------------#
-#=============================================================================#
-while (True):
-    process_sensors()
-    serial_in_data = getData()
+while True:
+    ''' main program loop '''
+    if (last_executed + EXECUTION_INTERVAL <= running_time()):
+        last_executed = running_time() 
 
-    # Create a string of the data to be sent
-    data_to_send = ",{},{}".format(sensor_one_reading, sensor_two_reading)
+        # retreive array of data from serial
+        retrieved_data = retrieve_columns_from_uart()
 
-    if (serial_in_data[0] != "#pause"):
-        # uart is the micro:bit command for serial
-        uart.write(data_to_send + EOL)
+        # update last seen data, if we've retrieved any.
+        if retrieved_data:
+            last_parsed_data = retrieved_data
 
-    sleep(DATA_RATE)
+        # check our sensor (it's the left button)
+        button_state = button_a.is_pressed() 
+
+        # Create comma delimited and newline (\n) terminated string to send to serial
+        # In this examples we return current button state and  we echo the first 
+        # element last received from serial
+        data_to_send = "{},{}\n".format(button_state, last_parsed_data[0])
+
+        uart.write(data_to_send)
