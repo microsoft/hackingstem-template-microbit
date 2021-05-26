@@ -4,8 +4,7 @@ Microcontroller code for Microsoft Hacking STEM [HSPROJECT] lesson plan adapted 
 # Getting Started
 1. Download lesson assets at http://aka.ms/hackingSTEM
 1. Build your [BUILDTHING]!
-1. [PICKONE] Use [Arduino IDE](https://www.arduino.cc/en/Main/Software) to flash the .ino to your [Arduino Uno](https://store.arduino.cc/usa/arduino-uno-rev3) microcontroller
-1. [PICKONE] Use [Mu for Python](https://codewith.mu/) to flash the .py to your  [micro:bit](https://www.microbit.org/) microcontroller
+1. Use [Mu for Python](https://codewith.mu/) to flash the .py to your  [micro:bit](https://www.microbit.org/) microcontroller
 1. Verify data interactions in Excel
 1. Ready, Set, Science!
 
